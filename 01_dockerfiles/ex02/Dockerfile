@@ -1,10 +1,21 @@
 FROM ruby:latest
 
-RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
-RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-RUN apt-get update
+# see update.sh for why all "apt-get install"s have to stay as one long line
+RUN apt-get update && apt-get install -y nodejs --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get install git-core curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev software-properties-common libffi-dev nodejs yarn
+# see http://guides.rubyonrails.org/command_line.html#rails-dbconsole
+RUN apt-get update && apt-get install -y mysql-client postgresql-client sqlite3 --no-install-recommends && rm -rf /var/lib/apt/lists/*
+ENV RAILS_VERSION 5.0.1
+RUN gem install rails --version "$RAILS_VERSION"
+RUN gem install bundler
+RUN gem install rake
+WORKDIR /opt/app
+COPY . .
+
+# delete next line
+RUN rails new .
+
+RUN bundle install
+RUN rake db:create
 
 CMD ["bash"]
