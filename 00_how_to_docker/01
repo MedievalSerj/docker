@@ -1,1 +1,1 @@
-docker-machine ip Char
+docker-machine create -d virtualbox --virtualbox-memory "3000" Char

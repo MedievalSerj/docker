@@ -1,1 +1,1 @@
-docker-machine rm Aiur -y
+docker-machine ssh Char "docker image ls -q | xargs docker image rm"

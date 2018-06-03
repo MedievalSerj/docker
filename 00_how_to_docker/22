@@ -1,1 +1,1 @@
-docker network create -d overlay overmind
+docker-machine ssh Aiur $(docker-machine ssh Char "docker swarm join-token worker | grep 'docker'")

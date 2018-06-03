@@ -1,1 +1,1 @@
-docker image ls -q | xargs docker image rm
+docker container ls -aq | xargs docker container rm -f

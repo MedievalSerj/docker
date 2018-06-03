@@ -1,1 +1,1 @@
-docker pull hello-world
+eval $(docker-machine env Char)

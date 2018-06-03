@@ -1,1 +1,1 @@
-docker container run -it --rm alpine
+docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' overlord
