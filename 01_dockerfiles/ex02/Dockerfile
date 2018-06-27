@@ -1,21 +1,19 @@
 FROM ruby:latest
 
-# see update.sh for why all "apt-get install"s have to stay as one long line
-RUN apt-get update && apt-get install -y nodejs --no-install-recommends && rm -rf /var/lib/apt/lists/*
+RUN apt-get update -y && \
+	apt-get install -y nodejs --no-install-recommends && \
+	gem install rails -v 5.0.2 && \
+	gem install bundler && \
+	gem install rake && \
+	mkdir -p /app
 
-# see http://guides.rubyonrails.org/command_line.html#rails-dbconsole
-RUN apt-get update && apt-get install -y mysql-client postgresql-client sqlite3 --no-install-recommends && rm -rf /var/lib/apt/lists/*
-ENV RAILS_VERSION 5.0.1
-RUN gem install rails --version "$RAILS_VERSION"
-RUN gem install bundler
-RUN gem install rake
-WORKDIR /opt/app
-COPY . .
+ONBUILD COPY . /app
 
-# delete next line
-RUN rails new .
+ONBUILD WORKDIR /app
 
-RUN bundle install
-RUN rake db:create
+ONBUILD EXPOSE 3000
 
-CMD ["bash"]
+ONBUILD RUN rails new . && \
+	bundle && \
+	rake db:migrate --trace && \
+	rake db:seed --trace
